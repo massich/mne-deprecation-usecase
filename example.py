@@ -63,6 +63,20 @@ def my_function_C(bar=None):
     return bar
 
 
+def my_transform_from_foo_to_bar(foo):
+    # takes foo and outputs valid bar
+    return "foo({})-->bar({})".format(foo, foo)
+
+
+@deprecate_parameter_rename(deprecated_in="1.0", removed_in="2.0",
+                            current_version=__version__,
+                            old_param='foo', new_param='bar',
+                            transform=my_transform_from_foo_to_bar)
+def my_function_D(bar=None):
+    print('bar :', bar)
+    return bar
+
+
 def test_my_function_A_depracation():
     with pytest.deprecated_call(match="my_new_function"):
         my_function_A()
@@ -74,7 +88,12 @@ def test_old_param_in_my_function_B_deprecation():
 
 
 def test_foo():
-    with pytest.deprecated_call() as record:
+    with pytest.deprecated_call(match="`foo` is deprecated .* `bar`"):
         xx = my_function_C(foo='ups')  # call with old parameter
     assert xx == 'ups'
-    print(record.list[0].message)
+
+
+def test_foo_with_transform():
+    with pytest.deprecated_call(match="`foo` is deprecated .* `bar`"):
+        xx = my_function_D(foo='ups')  # call with old parameter
+    assert xx == 'foo(ups)-->bar(ups)'
