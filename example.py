@@ -63,9 +63,9 @@ def my_function_C(bar=None):
     return bar
 
 
-def my_transform_from_foo_to_bar(foo):
+def my_transform_from_foo_to_bar(given):
     # takes foo and outputs valid bar
-    return "foo({})-->bar({})".format(foo, foo)
+    return "foo({0})-->bar({0})".format(given)
 
 
 @deprecate_parameter_rename(deprecated_in="1.0", removed_in="2.0",
